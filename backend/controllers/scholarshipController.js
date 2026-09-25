@@ -7,17 +7,27 @@ async function createScholarship(req, res) {
       title,
       totalBudget,
       remainingBudget,
-      deadline
+      rewardAmount,
+      deadline,
+      onChainId,
+      txHash
     } = req.body;
 
-    if (!scholarshipId || !title || totalBudget === undefined || !deadline) {
+    const missing = [];
+    if (!scholarshipId) missing.push('scholarshipId');
+    if (!title) missing.push('title');
+    if (totalBudget === undefined || totalBudget === null || totalBudget === '') missing.push('totalBudget');
+    if (!deadline) missing.push('deadline');
+
+    if (missing.length > 0) {
       return res.status(400).json({
-        message: 'scholarshipId, title, totalBudget and deadline are required.'
+        message: `Thiếu các thông tin bắt buộc: ${missing.join(', ')}.`
       });
     }
 
     const budget = Number(totalBudget);
     const remaining = remainingBudget === undefined ? budget : Number(remainingBudget);
+    const reward = rewardAmount !== undefined && rewardAmount !== '' ? Number(rewardAmount) : 1;
 
     if (!Number.isFinite(budget) || budget < 0 || !Number.isFinite(remaining) || remaining < 0 || remaining > budget) {
       return res.status(400).json({
@@ -25,18 +35,61 @@ async function createScholarship(req, res) {
       });
     }
 
+    if (!Number.isFinite(reward) || reward <= 0) {
+      return res.status(400).json({
+        message: 'rewardAmount must be greater than 0.'
+      });
+    }
+
+    const parsedOnChainId = (onChainId !== undefined && onChainId !== null && onChainId !== '') ? Number(onChainId) : null;
+
+    // Check if scholarship already exists by onChainId, txHash, or scholarshipId
+    let existing = null;
+    if (parsedOnChainId !== null) {
+      existing = await Scholarship.findOne({ onChainId: parsedOnChainId });
+    }
+    if (!existing && txHash) {
+      existing = await Scholarship.findOne({ txHash });
+    }
+    if (!existing) {
+      existing = await Scholarship.findOne({ scholarshipId });
+    }
+
+    if (existing) {
+      // If it's the same on-chain scholarship (or matched by txHash), update it idempotently
+      const isSameOnChain = parsedOnChainId !== null && existing.onChainId === parsedOnChainId;
+      const isSameTx = txHash && existing.txHash === txHash;
+      if (isSameOnChain || isSameTx || existing.scholarshipId === scholarshipId) {
+        existing.scholarshipId = scholarshipId;
+        existing.title = title;
+        existing.totalBudget = budget;
+        existing.remainingBudget = remaining;
+        existing.rewardAmount = reward;
+        existing.deadline = deadline;
+        if (parsedOnChainId !== null) existing.onChainId = parsedOnChainId;
+        if (txHash) existing.txHash = txHash;
+        await existing.save();
+        return res.status(200).json(existing);
+      }
+
+      return res.status(409).json({ message: `Mã học bổng "${scholarshipId}" đã tồn tại trên hệ thống. Vui lòng chọn mã khác.` });
+    }
+
     const scholarship = await Scholarship.create({
       scholarshipId,
       title,
       totalBudget: budget,
       remainingBudget: remaining,
-      deadline
+      rewardAmount: reward,
+      deadline,
+      onChainId: parsedOnChainId,
+      txHash: txHash || ''
     });
 
     return res.status(201).json(scholarship);
   } catch (error) {
     if (error.code === 11000) {
-      return res.status(409).json({ message: 'scholarshipId already exists.' });
+      return res.status(409).json({ message: 'Mã học bổng đã tồn tại trên hệ thống. Vui lòng chọn mã khác.' });
     }
 
     if (error.name === 'ValidationError') {

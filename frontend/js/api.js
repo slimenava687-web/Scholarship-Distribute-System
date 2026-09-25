@@ -6,8 +6,8 @@ const CURRENCY_KEY = 'scholarship_display_currency';
 
 async function apiRequest(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
-    ...options
+    ...options,
+    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.message || 'API request failed.');
@@ -58,10 +58,14 @@ export function setSelectedCurrency(currency) {
 
 export const api = {
   login: (payload) => apiRequest('/auth/login', { method: 'POST', body: JSON.stringify(payload) }),
+  updateProfile: (payload, walletAddress) => apiRequest('/auth/profile', { method: 'PUT', headers: { 'x-wallet-address': walletAddress }, body: JSON.stringify(payload) }),
   scholarships: () => apiRequest('/scholarships'),
   myApplications: (walletAddress) => apiRequest('/applications/my-applications', { headers: { 'x-wallet-address': walletAddress } }),
   createApplication: (payload, walletAddress) => apiRequest('/applications', { method: 'POST', headers: { 'x-wallet-address': walletAddress }, body: JSON.stringify(payload) }),
   allApplications: (walletAddress) => apiRequest('/admin/applications', { headers: { 'x-wallet-address': walletAddress } }),
   createScholarship: (payload, walletAddress) => apiRequest('/scholarships', { method: 'POST', headers: { 'x-wallet-address': walletAddress }, body: JSON.stringify(payload) }),
-  updateApplicationStatus: (id, status, walletAddress) => apiRequest(`/admin/applications/${id}/status`, { method: 'PATCH', headers: { 'x-wallet-address': walletAddress }, body: JSON.stringify({ status }) })
+  updateApplicationStatus: (id, payload, walletAddress) => {
+    const body = typeof payload === 'string' ? { status: payload } : payload;
+    return apiRequest(`/admin/applications/${id}/status`, { method: 'PATCH', headers: { 'x-wallet-address': walletAddress }, body: JSON.stringify(body) });
+  }
 };

@@ -14,15 +14,23 @@ const frontendOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:5500';
 
 app.use(cors({
   origin(origin, callback) {
-    const allowedOrigins = [frontendOrigin, 'http://127.0.0.1:5500'];
-
-    // Allow local file:// development and configured frontend origins.
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (like mobile apps, curl, or local files)
+    if (!origin) {
       return callback(null, true);
     }
 
-    return callback(new Error('Origin is not allowed by CORS.'));
-  }
+    const isLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+    const allowedOrigins = [frontendOrigin, 'http://localhost:5500', 'http://127.0.0.1:5500'];
+
+    if (isLocalhost || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(null, false);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-wallet-address']
 }));
 app.use(express.json());
 

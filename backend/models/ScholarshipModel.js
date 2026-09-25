@@ -23,6 +23,12 @@ const scholarshipSchema = new mongoose.Schema(
       required: true,
       min: 0
     },
+    rewardAmount: {
+      type: Number,
+      required: true,
+      default: 1,
+      min: 0
+    },
     deadline: {
       type: Date,
       required: true
@@ -30,6 +36,15 @@ const scholarshipSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true
+    },
+    onChainId: {
+      type: Number,
+      default: null
+    },
+    txHash: {
+      type: String,
+      default: '',
+      trim: true
     }
   },
   { timestamps: true }

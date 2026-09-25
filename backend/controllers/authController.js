@@ -12,14 +12,19 @@ async function login(req, res) {
     const normalizedAddress = getAddress(walletAddress);
     const messageLines = message.split('\n');
     const issuedAtLine = messageLines.find((line) => line.startsWith('Issued At: '));
-    const expectedMessage = [
+    const expectedMessageChain = [
+      'Scholarship Chain login',
+      `Wallet: ${normalizedAddress}`,
+      issuedAtLine
+    ].join('\n');
+    const expectedMessageLedger = [
       'Scholarship Ledger login',
       `Wallet: ${normalizedAddress}`,
       issuedAtLine
     ].join('\n');
     const issuedAt = issuedAtLine ? Date.parse(issuedAtLine.replace('Issued At: ', '')) : NaN;
 
-    if (message !== expectedMessage || !Number.isFinite(issuedAt) || Math.abs(Date.now() - issuedAt) > 5 * 60 * 1000) {
+    if ((message !== expectedMessageChain && message !== expectedMessageLedger) || !Number.isFinite(issuedAt) || Math.abs(Date.now() - issuedAt) > 5 * 60 * 1000) {
       return res.status(401).json({ message: 'Authentication message is invalid or expired.' });
     }
 
@@ -55,4 +60,29 @@ async function login(req, res) {
   }
 }
 
-module.exports = { login };
+async function updateProfile(req, res) {
+  try {
+    const { name, studentId } = req.body;
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({ message: 'Họ và tên là bắt buộc.' });
+    }
+
+    const user = req.user;
+    user.name = name.trim();
+    if (studentId !== undefined) {
+      user.studentId = String(studentId).trim();
+    }
+    await user.save();
+
+    return res.json({
+      message: 'Cập nhật hồ sơ sinh viên thành công.',
+      user
+    });
+  } catch (error) {
+    console.error('Error updating profile:', error.message);
+    return res.status(500).json({ message: 'Không thể cập nhật hồ sơ.' });
+  }
+}
+
+module.exports = { login, updateProfile };

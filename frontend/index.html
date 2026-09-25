@@ -2,51 +2,206 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Scholarship Ledger | Web3 EdTech</title>
+  <title>Scholarship Chain | Web3 EdTech</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css"><link rel="stylesheet" href="css/auth.css"><link rel="stylesheet" href="css/student.css"><link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/main.css?v=2.3"><link rel="stylesheet" href="css/auth.css?v=2.4"><link rel="stylesheet" href="css/student.css"><link rel="stylesheet" href="css/admin.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
-  <script type="module" src="js/app.js"></script>
-  <style>.auth-view[data-auth-mode="connect"] #flowLogin,.auth-view[data-auth-mode="connect"] .flow-line{display:none}.auth-card{width:min(560px,calc(100% - 32px));padding:52px}.auth-card .eyebrow,.auth-card .auth-flow,.auth-card .auth-help{display:none}.auth-card h1{text-align:center;font-size:clamp(2.4rem,5vw,4.2rem)}.auth-card .auth-intro{text-align:center;margin:0 auto 28px}.auth-card .brand{justify-content:center;margin-bottom:34px}.auth-card .connected-wallet{text-align:center}.visual-core{display:flex;align-items:center;justify-content:center;gap:3px;width:176px;height:82px;border-width:6px;border-radius:22px;font-size:2.4rem;letter-spacing:-.08em;transform:translate(-50%,-50%)}.visual-core span{font-size:.9rem;transform:none}</style>
-  <style>
-    @media (min-width: 801px) { .auth-card-wrap { transform: translateX(12vw); } .auth-visual .visual-core { left: 27%; } .auth-visual .visual-orbit { left: 30%; } }
-    .auth-visual .visual-core { z-index: 2; cursor: pointer; transform: translate(calc(-50% + var(--core-x, 0px)), calc(-50% + var(--core-y, 0px))); transition: filter .25s ease, box-shadow .25s ease; }
-    .auth-visual .visual-core:hover { filter: brightness(1.12); box-shadow: 0 0 95px rgba(6,182,212,.55), 0 0 0 1px rgba(165,243,252,.6); }
-    .auth-visual .visual-core.network-pulse { animation: network-pulse .65s ease-out; }
-    @keyframes network-pulse { 50% { box-shadow: 0 0 0 22px rgba(6,182,212,.12), 0 0 120px rgba(6,182,212,.65); } }
-    @media (max-width: 800px) { .auth-card-wrap { transform: none; } }
-  </style>
-  <style>
-    .auth-visual{background:var(--ink)}
-    .auth-visual .visual-grid,.auth-visual .visual-orbit,.auth-visual .visual-narrative,.auth-visual .visual-core,.auth-visual>p{display:none}
-    .auth-visual .visual-label{top:32px;left:32px}
-    .auth-card-wrap{transform:none!important}
-    .auth-card{max-width:520px;min-height:460px;display:flex;flex-direction:column;justify-content:center}
-    .auth-card .auth-help{display:block}
-    .auth-card h1{font-size:clamp(2.2rem,4vw,3.8rem)}
-    @media(max-width:800px){.auth-card{min-height:430px}}
-  </style>
-  <style>
-    .visual-narrative{position:absolute;top:30%;left:9%;z-index:2;display:grid;gap:8px;max-width:250px}.visual-narrative span{color:#67e8f9;font:600 .68rem 'Roboto Mono',monospace;letter-spacing:.1em;text-transform:uppercase}.visual-narrative strong{color:#f8fafc;font-size:clamp(1.8rem,3vw,3.2rem);line-height:.98;letter-spacing:-.08em}.visual-narrative small{margin-top:12px;color:#94a3b8;font:500 .65rem 'Roboto Mono',monospace;line-height:1.7}.auth-visual .visual-orbit{opacity:.62}.auth-visual .visual-grid{opacity:.1}.brand-mark{width:38px}
-    @media (min-width:801px){.visual-narrative{left:8%;top:28%}}
-    @media (max-width:800px){.visual-narrative{top:11%;left:7%;max-width:180px}.visual-narrative strong{font-size:1.7rem}.auth-visual .visual-orbit{opacity:.45}}
-  </style>
-<style>.currency-selector{display:flex;align-items:center;gap:8px;padding:5px 8px 5px 11px;color:#475569;background:#f8fafc;border:1px solid #e2e8f0;border-radius:999px;font:600 .6rem 'Roboto Mono',monospace}.currency-selector select{padding:5px 8px;color:#0f172a;background:#fff;border:1px solid #cbd5e1;border-radius:999px;font:600 .68rem Inter,sans-serif;cursor:pointer}.nav-divider{width:1px;height:24px;background:#e2e8f0}.budget-input-wrap{display:flex;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}.budget-input-wrap input{border:0!important;border-radius:0!important}.budget-unit{padding:0 12px;color:#2563eb;font:600 .7rem 'Roboto Mono',monospace}.budget-conversion{display:block;margin-top:7px;color:#64748b;font-size:.68rem}.button-spinner{display:inline-block;width:13px;height:13px;margin-right:7px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:-2px;animation:button-spin .7s linear infinite}.button:disabled{cursor:wait;opacity:.7;transform:none}@keyframes button-spin{to{transform:rotate(360deg)}}@media(max-width:560px){.nav-divider,.currency-selector span{display:none}.currency-selector{padding:3px}}</style>
+  <script type="module" src="js/app.js?v=2.8"></script>
 </head>
 <body>
   <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+
   <section id="loginView" class="auth-view">
-    <div class="auth-visual"><span class="visual-label">SCHOLARSHIP / LEDGER</span><div class="visual-grid"></div><div class="visual-orbit orbit-a"></div><div class="visual-orbit orbit-b"></div><div class="visual-narrative"><span>Scholarship</span><strong>minh bạch<br>trên blockchain.</strong><small>100% on-chain<br>verifiable</small></div><button id="networkCore" class="visual-core" type="button" aria-label="Scholarship Ledger network">S<span>+</span></button><p>Open access to<br><strong>better futures.</strong></p></div>
-    <div class="auth-card-wrap"><div class="auth-card"><div class="brand"><span class="brand-mark">S+</span><span>Scholarship <b>Ledger</b></span></div><p class="eyebrow">UNIVERSITY · WEB3 · 2026</p><h1>Kết nối ví<br><em>để bắt đầu.</em></h1><p class="auth-intro">Kết nối ví MetaMask để truy cập hệ thống Scholarship Ledger.</p><div class="auth-flow"><div class="flow-step is-active" id="flowConnect"><span>01</span><div><strong>Kết nối ví</strong><small>Chọn ví MetaMask của bạn</small></div></div><div class="flow-line"></div><div class="flow-step" id="flowLogin"><span>02</span><div><strong>Đăng nhập hệ thống</strong><small>Xác thực quyền truy cập</small></div></div></div><button id="connectWalletBtn" class="button button-primary button-lg"><span class="wallet-icon">M</span>Kết nối với MetaMask</button><button id="loginBtn" class="button button-cyan button-lg is-hidden"><span class="wallet-icon">✦</span>Ký thông điệp để đăng nhập</button><p id="connectedWallet" class="connected-wallet is-hidden"></p><p class="auth-help">Xác nhận chữ ký trong ví để đăng nhập an toàn.</p></div></div>
+    <div class="auth-bg" id="authBg">
+      <div class="cosmic-image-layer" id="cosmicImage"></div>
+      <div class="cosmic-nebula" id="cosmicNebula"></div>
+      
+      <div class="cosmic-layer cosmic-layer-mid" id="cosmicLayerMid">
+        <svg class="cosmic-svg-orbits" viewBox="0 0 1024 564" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="orbitGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.65" />
+              <stop offset="35%" stop-color="#60a5fa" stop-opacity="0.45" />
+              <stop offset="70%" stop-color="#2563eb" stop-opacity="0.3" />
+              <stop offset="100%" stop-color="#1d4ed8" stop-opacity="0.15" />
+            </linearGradient>
+            <linearGradient id="orbitGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2563eb" stop-opacity="0.15" />
+              <stop offset="40%" stop-color="#38bdf8" stop-opacity="0.4" />
+              <stop offset="80%" stop-color="#60a5fa" stop-opacity="0.55" />
+              <stop offset="100%" stop-color="#93c5fd" stop-opacity="0.2" />
+            </linearGradient>
+          </defs>
+          <ellipse class="orbit-path orbit-path-main" cx="495" cy="222" rx="395" ry="66" transform="rotate(-4.2 495 222)" />
+          <ellipse class="orbit-path orbit-path-secondary" cx="530" cy="235" rx="430" ry="82" transform="rotate(-7.5 530 235)" />
+        </svg>
+        <div class="cosmic-planet cosmic-planet-secondary" id="planetSecondary">
+          <div class="planet-glow"></div>
+          <div class="planet-sphere"></div>
+        </div>
+        <div class="cosmic-star cosmic-star-2" id="star2">
+          <div class="star-core"></div>
+        </div>
+      </div>
+
+      <div class="cosmic-layer cosmic-layer-fore" id="cosmicLayerFore">
+        <div class="cosmic-planet cosmic-planet-primary" id="planetPrimary">
+          <div class="planet-glow"></div>
+          <div class="planet-sphere"></div>
+        </div>
+        <div class="cosmic-star cosmic-star-1" id="star1">
+          <div class="star-core"></div>
+        </div>
+      </div>
+
+      <div class="cosmic-stardust" id="cosmicStardust"></div>
+      <div class="auth-noise"></div>
+    </div>
+
+    <div class="auth-card-wrap">
+      <div class="auth-card-halo" aria-hidden="true"></div>
+      <div class="auth-card" id="authCard">
+        <div class="brand auth-brand">
+          <img src="assets/logo.png" alt="Scholarship Chain" class="brand-logo-img" width="44" height="44">
+          <span>Scholarship <b>Chain</b></span>
+        </div>
+
+        <div class="auth-header">
+          <h1 id="authTitle">Đăng Nhập Cổng Học Bổng </h1>
+        </div>
+
+        <!-- State 1: Idle / Connect Button -->
+        <div id="stateConnect" class="auth-state-box">
+          <button id="connectWalletBtn" class="wallet-card-btn" type="button" aria-label="Kết nối ví MetaMask">
+            <div class="wallet-card-left">
+              <div class="wallet-icon-wrap" aria-hidden="true">
+                <img src="assets/metamask-fox.svg" alt="MetaMask" class="wallet-fox" width="56" height="56">
+              </div>
+              <div class="wallet-card-text">
+                <strong>MetaMask</strong>
+                <span>Kết nối ví để tiếp tục</span>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <!-- State 2: Connecting -->
+        <div id="stateConnecting" class="connecting-box is-hidden">
+          <div class="connecting-fox-wrap" aria-hidden="true">
+            <img src="assets/metamask-fox.svg" alt="MetaMask" class="wallet-fox" width="48" height="48">
+          </div>
+          <h3>Đang kết nối...</h3>
+          <p>Xác nhận trong MetaMask</p>
+          <div class="connecting-dots" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <!-- State 3: Connected & Signing -->
+        <div id="stateSign" class="auth-state-box is-hidden">
+          <div class="connected-pill">
+            <div class="connected-pill-left">
+              <div class="radar-beacon" aria-hidden="true">
+                <span class="radar-ripple"></span>
+                <span class="connected-dot"></span>
+              </div>
+              <div class="wallet-disk-icon" aria-hidden="true" title="MetaMask">
+                <img src="assets/metamask-fox.svg" alt="MetaMask" width="22" height="22" class="metamask-pill-fox">
+              </div>
+            </div>
+            <div class="connected-pill-center">
+              <span class="connected-label">ĐÃ KẾT NỐI TỚI VÍ</span>
+              <strong id="authConnectedAddress" class="mono">0x00...0000</strong>
+            </div>
+            <button id="copyAuthAddressBtn" class="wallet-copy-btn" type="button" title="Sao chép địa chỉ ví" aria-label="Sao chép địa chỉ ví">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+          <button id="loginBtn" class="wallet-card-btn wallet-card-sign" type="button" aria-label="Ký thông điệp xác thực bằng ví Web3">
+            <div class="sign-card-content">
+              <div class="sign-key-seal" aria-hidden="true">
+                <div class="seal-orbit"></div>
+                <div class="seal-disk">
+                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#34d399" stroke-width="1.5" opacity="0.55"></path>
+                    <circle cx="10" cy="9.5" r="3.2" stroke="#a7f3d0" stroke-width="2.2"></circle>
+                    <path d="M12.2 11.7l5.3 5.3m-2-1l1.8 1.8m-3.5-1l1 1" stroke="#6ee7b7" stroke-width="2.2"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="wallet-card-text">
+                <div class="sign-title-group">
+                  <strong>Ký Xác Thực</strong>
+                </div>
+                <div class="sign-pill-badge">
+                  <svg class="sign-badge-fire" viewBox="0 0 24 24" width="11" height="11" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2c.5 3 2 4.5 4 6 2.5 1.8 4 4.5 4 8a8 8 0 1 1-16 0c0-3.5 2.5-6.5 4.5-8 .5 1.5 1 2 2 2 1.5-2 2-5 1.5-8z"></path>
+                  </svg>
+                  <span>Miễn Phí Gas</span>
+                </div>
+              </div>
+            </div>
+          </button>
+          <button id="switchWalletBtn" class="switch-wallet-btn" type="button">Đổi ví</button>
+        </div>
+
+        <!-- State 4: Error -->
+        <div id="stateError" class="error-box is-hidden">
+          <div class="error-badge-icon" aria-hidden="true">!</div>
+          <h3 id="authErrorTitle">Không thể kết nối ví</h3>
+          <p id="authErrorMessage">Kiểm tra MetaMask và thử lại.</p>
+          <div class="error-actions" id="authErrorActions">
+            <button id="authRetryBtn" class="button button-primary button-block" type="button">Thử lại</button>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
   </section>
 
-  <div id="appView" class="app-view is-hidden"><header class="topbar"><div class="page-shell topbar-inner"><a class="brand" href="#top"><span class="brand-mark">S</span><span>Scholarship <b>Ledger</b></span></a><div class="account-actions"><span id="roleBadge" class="role-badge"></span><span id="navWallet" class="mono wallet-label"></span><button id="logoutBtn" class="button button-quiet">Đăng xuất</button></div></div></header><main id="top" class="page-shell app-main"><section class="dashboard-hero"><div><p id="dashboardEyebrow" class="eyebrow">STUDENT PORTAL</p><h2 id="dashboardTitle">Mở khóa cơ hội tiếp theo.</h2><p id="dashboardSubtitle">Mọi hồ sơ của bạn, rõ ràng từ lúc nộp đến khi được xét duyệt.</p></div><div class="wallet-summary"><div class="wallet-connected"><span class="pulse-dot"></span><span id="heroWallet"></span></div><div class="balance-card"><span>SỐ DƯ VÍ</span><strong id="walletBalance">-- ETH</strong><small id="balanceNetwork">MetaMask</small></div></div></section><div id="appAlert" class="inline-alert is-hidden"></div>
+  <div id="appView" class="app-view is-hidden"><header class="topbar"><div class="page-shell topbar-inner"><a class="brand" href="#top"><img src="assets/logo.png" alt="Scholarship Chain" class="brand-logo-img" width="34" height="34"><span>Scholarship <b>Chain</b></span></a><div class="account-actions"><span id="roleBadge" class="role-badge"></span><span id="navWallet" class="mono wallet-label"></span><button id="logoutBtn" class="button-logout" type="button" aria-label="Đăng xuất khỏi hệ thống" title="Đăng xuất khỏi ví"><span class="logout-icon-wrap" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span><span class="logout-text">Đăng xuất</span></button></div></div></header><main id="top" class="page-shell app-main"><section class="dashboard-hero"><div><p id="dashboardEyebrow" class="eyebrow">CỔNG THÔNG TIN SINH VIÊN</p><h2 id="dashboardTitle">Chương trình Học bổng Sinh viên</h2><p id="dashboardSubtitle">Tra cứu học bổng đang mở và theo dõi kết quả xét duyệt hồ sơ.</p></div><div class="wallet-summary"><div class="balance-card"><span>SỐ DƯ VÍ</span><strong id="walletBalance">-- ETH</strong><small id="balanceNetwork">MetaMask</small></div></div></section><div id="appAlert" class="inline-alert is-hidden"></div>
 
-<section class="content-section"><div class="section-heading"><div><p class="eyebrow">OPEN FUNDING</p><h3>Học bổng đang mở</h3></div><button id="refreshBtn" class="button button-outline">Làm mới <span>↻</span></button></div><div id="scholarshipList" class="scholarship-grid"><div class="loading-state">Đang tải dữ liệu...</div></div></section>
+<section class="content-section"><div class="section-heading"><div><p class="eyebrow">DANH MỤC HỌC BỔNG</p><h3>Các chương trình đang nhận hồ sơ</h3></div><button id="refreshBtn" class="button button-outline">Làm mới <span>↻</span></button></div><div id="scholarshipList" class="scholarship-grid"><article class="skeleton-card" aria-hidden="true"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="skeleton-shimmer skeleton-pill" style="width:36%;"></div><div class="skeleton-shimmer skeleton-pill" style="width:28%;"></div></div><div class="skeleton-shimmer skeleton-title" style="margin:16px 0 10px;"></div><div class="skeleton-shimmer skeleton-row" style="width:85%;margin-bottom:6px;"></div><div class="skeleton-shimmer skeleton-row" style="width:65%;margin-bottom:10px;"></div><div class="skeleton-shimmer skeleton-bar"></div><div style="display:flex;justify-content:space-between;margin-top:6px;"><div class="skeleton-shimmer skeleton-pill" style="width:32%;"></div><div class="skeleton-shimmer skeleton-pill" style="width:24%;"></div></div></article><article class="skeleton-card" aria-hidden="true"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="skeleton-shimmer skeleton-pill" style="width:36%;"></div><div class="skeleton-shimmer skeleton-pill" style="width:28%;"></div></div><div class="skeleton-shimmer skeleton-title" style="margin:16px 0 10px;"></div><div class="skeleton-shimmer skeleton-row" style="width:85%;margin-bottom:6px;"></div><div class="skeleton-shimmer skeleton-row" style="width:65%;margin-bottom:10px;"></div><div class="skeleton-shimmer skeleton-bar"></div><div style="display:flex;justify-content:space-between;margin-top:6px;"><div class="skeleton-shimmer skeleton-pill" style="width:32%;"></div><div class="skeleton-shimmer skeleton-pill" style="width:24%;"></div></div></article><article class="skeleton-card" aria-hidden="true"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="skeleton-shimmer skeleton-pill" style="width:36%;"></div><div class="skeleton-shimmer skeleton-pill" style="width:28%;"></div></div><div class="skeleton-shimmer skeleton-title" style="margin:16px 0 10px;"></div><div class="skeleton-shimmer skeleton-row" style="width:85%;margin-bottom:6px;"></div><div class="skeleton-shimmer skeleton-row" style="width:65%;margin-bottom:10px;"></div><div class="skeleton-shimmer skeleton-bar"></div><div style="display:flex;justify-content:space-between;margin-top:6px;"><div class="skeleton-shimmer skeleton-pill" style="width:32%;"></div><div class="skeleton-shimmer skeleton-pill" style="width:24%;"></div></div></article></div></section>
 
-<section id="studentPanel" class="content-section is-hidden"><div class="section-heading"><div><p class="eyebrow">STUDENT VIEW</p><h3>Không gian của tôi</h3></div><span class="section-hint">Hồ sơ gắn với ví đang đăng nhập</span></div><div class="student-layout"><article class="surface form-surface"><div class="panel-heading"><span class="panel-icon icon-cyan">↗</span><div><h4>Nộp hồ sơ</h4><p>Chọn học bổng phù hợp với bạn.</p></div></div><form id="applicationForm"><label for="applicationScholarshipId">HỌC BỔNG</label><select id="applicationScholarshipId" required><option value="">Chọn học bổng đang mở</option></select><label for="studentName">HỌ VÀ TÊN</label><input id="studentName" required placeholder="Nguyễn Văn A"><button class="button button-cyan button-block" type="submit">Gửi hồ sơ <span>→</span></button></form></article><article class="surface table-surface"><div class="panel-heading"><span class="panel-icon icon-blue">≡</span><div><h4>Lịch sử nộp hồ sơ</h4><p>Theo dõi tiến trình xét duyệt.</p></div></div><div class="table-scroll"><table><thead><tr><th>Mã hồ sơ</th><th>Học bổng</th><th>Ngày gửi</th><th>Trạng thái</th></tr></thead><tbody id="myApplicationsTable"></tbody></table></div></article></div></section>
+<section id="studentPanel" class="content-section is-hidden"><div class="section-heading"><div><p class="eyebrow">HỒ SƠ CÁ NHÂN</p><h3>Không gian sinh viên</h3></div><span class="section-hint">Hồ sơ gắn với ví đang kết nối</span></div><div class="student-layout"><article class="surface form-surface"><div class="panel-heading"><span class="panel-icon icon-cyan" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span><div><h4>Nộp hồ sơ</h4><p>Điền thông tin đăng ký học bổng.</p></div></div><form id="applicationForm"><label for="applicationScholarshipId">HỌC BỔNG</label><select id="applicationScholarshipId" required><option value="">Chọn chương trình học bổng</option></select><label>HỒ SƠ SINH VIÊN XÁC THỰC</label><div class="verified-profile-card"><div class="verified-profile-left"><div class="verified-avatar-icon">🎓</div><div class="verified-details"><strong id="displayStudentName">Đang tải...</strong><span id="displayStudentId">MSSV: --</span></div></div><button type="button" id="editProfileBtn" class="edit-profile-action-btn" title="Cập nhật họ tên hoặc MSSV">Sửa hồ sơ</button></div><input type="hidden" id="studentName"><button class="button button-cyan button-block" type="submit">Gửi hồ sơ</button></form></article><article class="surface table-surface"><div class="panel-heading"><span class="panel-icon icon-blue" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><line x1="9" y1="12" x2="15" y2="12"></line><line x1="9" y1="16" x2="13" y2="16"></line></svg></span><div><h4>Lịch sử đăng ký</h4><p>Danh sách các hồ sơ đã nộp và trạng thái.</p></div></div><div class="table-scroll"><table><thead><tr><th>Mã hồ sơ</th><th>Học bổng</th><th>Ngày gửi</th><th>Trạng thái</th></tr></thead><tbody id="myApplicationsTable"></tbody></table></div></article></div></section>
 
-<section id="adminPanel" class="content-section is-hidden"><div class="section-heading"><div><p class="eyebrow">ADMIN CONSOLE</p><h3>Điều hành học bổng</h3></div><span class="section-hint">Quyền quản trị được xác thực bằng ví</span></div><div id="adminMetrics" class="metrics-grid"></div><div class="admin-layout"><article class="surface form-surface"><div class="panel-heading"><span class="panel-icon icon-amber">＋</span><div><h4>Tạo học bổng mới</h4><p>Khởi tạo một nguồn quỹ minh bạch.</p></div></div><form id="scholarshipForm"><label for="scholarshipId">MÃ HỌC BỔNG</label><input id="scholarshipId" required placeholder="SCH-2026-01"><label for="scholarshipTitle">TÊN CHƯƠNG TRÌNH</label><input id="scholarshipTitle" required placeholder="Học bổng tài năng trẻ"><div class="form-row"><div><label for="totalBudget">NGÂN SÁCH TỔNG</label><input id="totalBudget" type="number" min="0" required></div><div><label for="remainingBudget">NGÂN SÁCH CÒN LẠI</label><input id="remainingBudget" type="number" min="0" required></div></div><label for="deadline">HẠN NỘP HỒ SƠ</label><input id="deadline" type="datetime-local" required><button class="button button-primary button-block" type="submit">Tạo học bổng <span>→</span></button></form></article><article class="surface table-surface"><div class="panel-heading"><span class="panel-icon icon-red">✓</span><div><h4>Hồ sơ sinh viên</h4><p>Duyệt hoặc từ chối hồ sơ gửi tới.</p></div></div><div class="table-scroll"><table><thead><tr><th>Sinh viên</th><th>Học bổng</th><th>Ví</th><th>Trạng thái</th><th></th></tr></thead><tbody id="adminApplicationsTable"></tbody></table></div></article></div></section></main><footer class="page-shell footer"><span>Scholarship Ledger</span><span>Powered by Ethereum · MongoDB Atlas</span></footer></div>
+<section id="adminPanel" class="content-section is-hidden"><div class="section-heading"><div><p class="eyebrow">BẢNG ĐIỀU KHIỂN QUẢN TRỊ</p><h3>Quản lý chương trình học bổng</h3></div><button id="syncOnChainBtn" class="button button-outline" type="button" title="Quét và đồng bộ các học bổng từ Smart Contract về CSDL"><span>🔄 Đồng bộ từ Smart Contract</span></button></div><div id="adminMetrics" class="metrics-grid"></div><div class="admin-layout"><article class="surface form-surface"><div class="panel-heading"><span class="panel-icon icon-amber" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg></span><div><h4>Tạo học bổng mới</h4><p>Thiết lập nguồn quỹ và thời hạn nhận hồ sơ.</p></div></div><form id="scholarshipForm"><label for="scholarshipId">MÃ HỌC BỔNG</label><input id="scholarshipId" required placeholder="SCH-2026-01"><label for="scholarshipTitle">TÊN CHƯƠNG TRÌNH</label><input id="scholarshipTitle" required placeholder="Học bổng tài năng trẻ"><div class="form-row"><div><label for="totalBudget">NGÂN SÁCH TỔNG</label><input id="totalBudget" type="number" min="0" step="any" required></div><div><label for="rewardAmount">MỖI SUẤT HỌC BỔNG</label><input id="rewardAmount" type="number" min="0.0001" step="any" value="1" placeholder="1" required></div></div><label for="deadline">HẠN NỘP HỒ SƠ</label><input id="deadline" type="datetime-local" required><button class="button button-primary button-block" type="submit">Tạo học bổng</button></form></article><article class="surface table-surface"><div class="panel-heading"><span class="panel-icon icon-red" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg></span><div><h4>Xét duyệt & Giải ngân</h4><p>Duyệt hồ sơ và giải ngân ETH trực tiếp cho sinh viên.</p></div></div><div class="table-scroll"><table><thead><tr><th>Sinh viên</th><th>Học bổng</th><th>Ví</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody id="adminApplicationsTable"></tbody></table></div></article></div></section></main><footer class="page-shell footer"><span>Scholarship Chain</span><span>Powered by Ethereum · MongoDB Atlas</span></footer></div>
+  <!-- Modal Onboarding / Cập nhật hồ sơ sinh viên -->
+  <div id="onboardingBackdrop" class="modal-backdrop is-hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button id="onboardingCloseBtn" class="modal-close-btn" type="button" aria-label="Đóng">&times;</button>
+      <div class="modal-header">
+        <div class="modal-icon-badge" style="background:#dbeafe;color:var(--blue);font-size:24px;display:flex;align-items:center;justify-content:center;">🎓</div>
+        <div class="modal-title-group">
+          <h3 id="onboardingTitle">Hoàn tất hồ sơ sinh viên</h3>
+          <p id="onboardingSubtitle">Xác nhận danh tính liên kết với địa chỉ ví của bạn một lần duy nhất.</p>
+        </div>
+      </div>
+      <div class="onboarding-wallet-pill">
+        <span>Ví liên kết:</span>
+        <strong id="onboardingWalletAddress" class="mono">0x00...0000</strong>
+      </div>
+      <form id="onboardingForm">
+        <div style="margin-bottom: 14px;">
+          <label for="onboardingFullName">HỌ VÀ TÊN SINH VIÊN *</label>
+          <input id="onboardingFullName" type="text" required placeholder="Ví dụ: Nguyễn Văn An" style="margin-top:6px;width:100%;">
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label for="onboardingStudentId">MÃ SỐ SINH VIÊN (MSSV) *</label>
+          <input id="onboardingStudentId" type="text" required placeholder="Ví dụ: 20261234" style="margin-top:6px;width:100%;">
+        </div>
+        <div class="modal-actions">
+          <button id="onboardingCancelBtn" class="button modal-btn-cancel is-hidden" type="button">Hủy bỏ</button>
+          <button id="onboardingSubmitBtn" class="button modal-btn-confirm button-primary" type="submit">Lưu hồ sơ & Bắt đầu 🚀</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </body>
 </html>

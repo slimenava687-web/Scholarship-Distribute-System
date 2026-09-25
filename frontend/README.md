@@ -1,4 +1,4 @@
-# Scholarship Ledger Frontend
+# Scholarship Chain Frontend
 
 ## Chạy giao diện
 

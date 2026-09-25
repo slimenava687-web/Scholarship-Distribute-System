@@ -9,9 +9,9 @@ async function connectDatabase() {
     throw new Error('MONGODB_URI is not defined in the .env file.');
   }
 
-  if (dnsServer) {
-    dns.setServers([dnsServer]);
-  }
+  try {
+    dns.setServers(dnsServer ? [dnsServer] : ['8.8.8.8', '1.1.1.1']);
+  } catch {}
 
   await mongoose.connect(MONGODB_URI);
   console.log('MongoDB Atlas connected.');

@@ -10,10 +10,19 @@ async function authenticateWallet(req, res, next) {
 
   try {
     const normalizedAddress = getAddress(walletAddress);
-    const user = await User.findOne({ walletAddress: normalizedAddress });
+    let user = await User.findOne({
+      $or: [
+        { walletAddress: normalizedAddress },
+        { walletAddress: { $regex: new RegExp(`^${normalizedAddress}$`, 'i') } }
+      ]
+    });
 
     if (!user) {
-      return res.status(401).json({ message: 'User is not registered.' });
+      user = await User.create({
+        walletAddress: normalizedAddress,
+        role: 'student',
+        name: ''
+      });
     }
 
     req.user = user;

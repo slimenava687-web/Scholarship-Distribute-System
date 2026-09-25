@@ -2,9 +2,15 @@ import { initAuth, restoreSession, authState, refreshBalance } from './auth.js';
 import { initStudent, loadScholarships, loadMyApplications } from './student.js';
 import { initAdmin, loadAdminApplications } from './admin.js';
 import { getSelectedCurrency, setSelectedCurrency } from './api.js';
-import { showLoading } from './ui.js';
+import { showSkeletonCards } from './ui.js';
 
-async function loadDashboard() { showLoading(document.getElementById('scholarshipList')); await refreshBalance(); await loadScholarships(); if (authState.user.role === 'admin') await loadAdminApplications(); else await loadMyApplications(); }
+async function loadDashboard() {
+	showSkeletonCards(document.getElementById('scholarshipList'), 3);
+	await refreshBalance();
+	await loadScholarships();
+	if (authState.user?.role === 'admin') await loadAdminApplications();
+	else if (authState.user) await loadMyApplications();
+}
 
 function initCurrencySelector() {
 	const heading = document.querySelector('.account-actions');

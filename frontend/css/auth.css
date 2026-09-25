@@ -1,1 +1,1004 @@
-.auth-view{position:relative;display:grid;place-items:center;min-height:100vh;overflow:hidden;background:var(--ink)}.auth-visual{position:absolute;inset:0;display:block;overflow:hidden;color:#fff;background:radial-gradient(circle at 50% 44%,#18365d 0,#0f172a 42%,#090f1d 100%)}.visual-label{position:absolute;top:34px;left:40px;z-index:2;color:#67e8f9;font:500 .62rem 'Roboto Mono',monospace;letter-spacing:.12em}.visual-grid{position:absolute;inset:0;opacity:.13;background-image:linear-gradient(#38bdf8 1px,transparent 1px),linear-gradient(90deg,#38bdf8 1px,transparent 1px);background-size:54px 54px;transform:perspective(550px) rotateX(58deg) scale(1.8);transform-origin:bottom}.visual-orbit{position:absolute;top:44%;left:50%;width:min(620px,70vw);height:min(280px,32vw);border:1px solid rgba(34,211,238,.44);border-radius:50%;transform:translate(-50%,-50%) rotate(-28deg);animation:orbit-drift 14s ease-in-out infinite}.orbit-b{width:min(280px,32vw);height:min(620px,70vw);transform:translate(-50%,-50%) rotate(32deg);animation-delay:-5s}.visual-core{position:absolute;top:44%;left:50%;display:grid;place-items:center;width:116px;height:116px;color:#fff;background:var(--blue);border:8px solid rgba(103,232,249,.17);border-radius:36px;font-size:3rem;font-weight:800;transform:translate(-50%,-50%) rotate(45deg);box-shadow:0 0 80px rgba(6,182,212,.35),0 0 0 1px rgba(165,243,252,.3);animation:core-breathe 4s ease-in-out infinite}.visual-core span{color:#a5f3fc;font-size:1rem;transform:rotate(-45deg)}.auth-visual p{position:absolute;bottom:34px;left:40px;z-index:2;color:#94a3b8;font-size:1rem;letter-spacing:-.03em}.auth-visual p strong{color:#67e8f9}.auth-card-wrap{position:relative;z-index:3;display:grid;place-items:center;width:100%;padding:40px}.auth-card{width:min(470px,100%);padding:42px;background:rgba(248,250,252,.93);border:1px solid rgba(255,255,255,.9);border-radius:var(--radius-lg);box-shadow:0 30px 100px rgba(0,0,0,.32);backdrop-filter:blur(22px);animation:slide-up .5s ease both}.auth-card .brand{margin-bottom:48px}.auth-card h1{margin:12px 0 18px;font-size:clamp(2.3rem,4vw,4rem);line-height:1;letter-spacing:-.08em}.auth-card h1 em{color:var(--blue);font-style:normal}.auth-intro{color:var(--muted);font-size:.84rem;line-height:1.7}.auth-flow{margin:30px 0 25px}.flow-step{display:flex;align-items:center;gap:12px;color:#94a3b8;transition:color .3s}.flow-step.is-active{color:var(--ink)}.flow-step>span{display:grid;place-items:center;width:28px;height:28px;border:1px solid currentColor;border-radius:50%;font:500 .63rem 'Roboto Mono',monospace}.flow-step.is-active>span{color:#fff;background:var(--blue);border-color:var(--blue);box-shadow:0 0 0 5px rgba(37,99,235,.12)}.flow-step strong,.flow-step small{display:block}.flow-step strong{font-size:.78rem}.flow-step small{margin-top:2px;font-size:.68rem}.flow-line{height:17px;margin-left:13px;border-left:1px dashed #cbd5e1}.connected-wallet{margin:12px 0 0;color:#0e7490;font:500 .68rem 'Roboto Mono',monospace;text-align:center}.auth-help{margin:18px 0 0;color:var(--muted);font-size:.7rem;text-align:center}.auth-help a{color:var(--blue)}.wallet-icon{margin-right:7px;color:#67e8f9}.auth-view[data-auth-mode=login] .visual-core{background:var(--cyan);box-shadow:0 0 100px rgba(6,182,212,.5),0 0 0 1px rgba(165,243,252,.5)}@keyframes orbit-drift{0%,100%{transform:translate(-50%,-50%) rotate(-28deg) scale(1)}50%{transform:translate(-50%,-50%) rotate(-22deg) scale(1.035)}}@keyframes core-breathe{50%{box-shadow:0 0 110px rgba(6,182,212,.55),0 0 0 1px rgba(165,243,252,.5)}}@media(prefers-reduced-motion:reduce){.visual-orbit,.visual-core{animation:none}}@media(max-width:800px){.auth-card-wrap{padding:20px}.auth-card{padding:32px 25px}.auth-card .brand{margin-bottom:40px}.visual-label{top:20px;left:20px}.auth-visual p{bottom:20px;left:20px;font-size:.85rem}}@media(max-width:560px){.auth-card{max-width:420px}.visual-orbit{width:560px;height:250px}.orbit-b{width:250px;height:560px}.visual-core{width:90px;height:90px;font-size:2.3rem}.auth-card h1{font-size:2.45rem}}
+/* ==========================================================================
+   Web3 Wallet Connection View (Auth)
+   ========================================================================== */
+
+.auth-view {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  background-color: #000c21;
+  overflow: hidden;
+  perspective: 1200px;
+}
+
+/* Background Atmosphere & Cosmic System */
+.auth-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Base Cosmic Image Layer (User Image Rendered Directly) */
+.cosmic-image-layer {
+  position: absolute;
+  inset: -40px;
+  background-image:
+    radial-gradient(ellipse at 50% 40%, rgba(6, 62, 155, 0.28) 0%, rgba(0, 12, 33, 0.4) 65%, #000a1c 100%),
+    url('../assets/cosmic-orbit.png');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.95;
+  filter: contrast(1.06) saturate(1.1);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+/* Dynamic Breathing Nebula Glow */
+.cosmic-nebula {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  width: min(920px, 95vw);
+  height: min(650px, 75vh);
+  transform: translate(-50%, -50%) translateZ(0);
+  background: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.35) 0%, rgba(14, 116, 144, 0.14) 38%, transparent 72%);
+  filter: blur(32px);
+  pointer-events: none;
+  animation: nebula-breathe 10s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* Parallax Layers (Driven entirely by JS rAF Lerp - NO conflicting CSS transitions) */
+.cosmic-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+/* Dynamic 3D Crisp SVG Orbits (GPU Accelerated) */
+.cosmic-svg-orbits {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform-origin: 50% 42%;
+  backface-visibility: hidden;
+  will-change: transform;
+  animation: orbit-dynamic-sway 7.5s ease-in-out infinite alternate;
+}
+
+.orbit-path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.orbit-path-main {
+  stroke: url(#orbitGrad1);
+  stroke-width: 1.2px;
+  filter: drop-shadow(0 0 3px rgba(56, 189, 248, 0.55));
+  opacity: 0.85;
+}
+
+.orbit-path-secondary {
+  stroke: url(#orbitGrad2);
+  stroke-width: 1px;
+  filter: drop-shadow(0 0 2px rgba(37, 99, 235, 0.45));
+  opacity: 0.65;
+}
+
+/* 3D Celestial Spheres (Planets) */
+.cosmic-planet {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.planet-glow {
+  position: absolute;
+  inset: -60%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.planet-sphere {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+/* Peak 1: Primary Planet (Left Front: 15.2%, 45.4%) */
+.cosmic-planet-primary {
+  left: 15.2%;
+  top: 45.4%;
+  width: 32px;
+  height: 32px;
+  transform: translate(-50%, -50%);
+  animation: planet-drift-primary 6s ease-in-out infinite alternate;
+}
+
+.cosmic-planet-primary .planet-glow {
+  background: radial-gradient(circle, rgba(136, 160, 253, 0.9) 0%, rgba(37, 99, 235, 0.5) 45%, transparent 75%);
+  filter: blur(10px);
+  animation: planet-pulse-glow 4s ease-in-out infinite alternate;
+}
+
+.cosmic-planet-primary .planet-sphere {
+  background: radial-gradient(circle at 30% 28%, #ffffff 0%, #b8d3fe 18%, #60a5fa 42%, #2563eb 72%, #1e1b4b 100%);
+  box-shadow:
+    0 0 16px 2px rgba(136, 160, 253, 0.85),
+    0 0 35px 8px rgba(37, 99, 235, 0.45),
+    inset -2px -3px 5px rgba(192, 132, 252, 0.7);
+}
+
+/* Peak 2: Secondary Planet (Right Back: 77.7%, 24.8%) */
+.cosmic-planet-secondary {
+  left: 77.7%;
+  top: 24.8%;
+  width: 38px;
+  height: 38px;
+  transform: translate(-50%, -50%);
+  animation: planet-drift-secondary 7.5s ease-in-out infinite alternate;
+}
+
+.cosmic-planet-secondary .planet-glow {
+  background: radial-gradient(circle, rgba(89, 136, 239, 0.95) 0%, rgba(37, 99, 235, 0.6) 50%, transparent 80%);
+  filter: blur(12px);
+}
+
+.cosmic-planet-secondary .planet-sphere {
+  background: radial-gradient(circle at 38% 35%, #e0f2fe 0%, #93c5fd 35%, #3b82f6 70%, #1e3a8a 100%);
+  filter: blur(1.8px);
+  box-shadow:
+    0 0 24px 6px rgba(59, 130, 246, 0.9),
+    0 0 50px 14px rgba(29, 78, 216, 0.6);
+}
+
+/* Satellite Stars */
+.cosmic-star {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.cosmic-star .star-core {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.cosmic-star-1 {
+  left: 20.3%;
+  top: 63.1%;
+  width: 7px;
+  height: 7px;
+  animation: star-pulse 3.8s ease-in-out infinite alternate;
+}
+
+.cosmic-star-1 .star-core {
+  background: #bfdbfe;
+  box-shadow:
+    0 0 8px 3px rgba(96, 165, 250, 0.95),
+    0 0 22px 6px rgba(37, 99, 235, 0.7);
+}
+
+.cosmic-star-2 {
+  left: 80.3%;
+  top: 56.4%;
+  width: 4px;
+  height: 4px;
+  animation: star-pulse 4.6s ease-in-out infinite 1.5s alternate;
+}
+
+.cosmic-star-2 .star-core {
+  background: #60a5fa;
+  box-shadow: 0 0 8px 2px rgba(56, 189, 248, 0.85);
+}
+
+/* Twinkling Stardust Field */
+.cosmic-stardust {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.stardust-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: #93c5fd;
+  opacity: 0.6;
+  animation: star-twinkle 4s ease-in-out infinite alternate;
+}
+
+/* Organic Texture Noise */
+.auth-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.025;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Keyframe Animations for Cosmic Motion */
+@keyframes orbit-dynamic-sway {
+  0% {
+    transform: translate3d(-14px, -8px, 0) rotate(-4.5deg) scale(0.97);
+  }
+  50% {
+    transform: translate3d(6px, 8px, 0) rotate(0.8deg) scale(1.02);
+  }
+  100% {
+    transform: translate3d(16px, -6px, 0) rotate(5deg) scale(1.05);
+  }
+}
+
+@keyframes nebula-breathe {
+  0% { transform: translate(-50%, -50%) scale(0.96); opacity: 0.7; }
+  50% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0.98); opacity: 0.78; }
+}
+
+@keyframes planet-drift-primary {
+  0% { transform: translate(-50%, -50%) translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate(-50%, -50%) translate3d(18px, -12px, 0) scale(1.08); }
+  100% { transform: translate(-50%, -50%) translate3d(-14px, 14px, 0) scale(0.94); }
+}
+
+@keyframes planet-drift-secondary {
+  0% { transform: translate(-50%, -50%) translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate(-50%, -50%) translate3d(-16px, 12px, 0) scale(1.1); }
+  100% { transform: translate(-50%, -50%) translate3d(16px, -10px, 0) scale(0.93); }
+}
+
+@keyframes planet-pulse-glow {
+  0% { opacity: 0.75; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes star-pulse {
+  0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.6; }
+  50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.75; }
+}
+
+@keyframes star-twinkle {
+  0% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 0.85; transform: scale(1.2); }
+  100% { opacity: 0.3; transform: scale(0.9); }
+}
+
+.auth-card-wrap {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Focused Ambient Backlight Halo around Card */
+.auth-card-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(530px, 94vw);
+  height: min(490px, 88vh);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.28) 0%, rgba(6, 182, 212, 0.12) 42%, transparent 72%);
+  filter: blur(50px);
+  pointer-events: none;
+  border-radius: 36px;
+  z-index: 1;
+}
+
+.auth-card {
+  position: relative;
+  z-index: 12;
+  width: min(480px, 100%);
+  padding: 40px 38px;
+  background: #F8FAFC;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 24px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.35),
+    0 20px 45px -10px rgba(0, 0, 0, 0.5),
+    0 40px 80px -20px rgba(8, 15, 31, 0.65);
+  animation: card-rise 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top Branding */
+.auth-brand {
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 22px;
+  gap: 12px;
+}
+
+.auth-brand .brand-logo-img {
+  width: 44px;
+  height: 44px;
+  filter: drop-shadow(0 4px 14px rgba(37, 99, 235, 0.35));
+}
+
+.auth-brand span {
+  font-size: 1.3rem;
+  letter-spacing: -0.03em;
+}
+
+/* Header Typography */
+.auth-header {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.auth-header h1 {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.04em;
+}
+
+.auth-header .auth-intro {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+/* Wallet Card Button (Focal Point - Vibrant Blue) */
+.wallet-card-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px 24px;
+  min-height: 82px;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+  box-shadow: 0 10px 28px -4px rgba(37, 99, 235, 0.38), 0 4px 12px -2px rgba(37, 99, 235, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.wallet-card-btn:hover {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border-color: rgba(255, 255, 255, 0.38);
+  box-shadow: 0 16px 36px -4px rgba(37, 99, 235, 0.48), 0 6px 14px -2px rgba(37, 99, 235, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  transform: translateY(-2px);
+}
+
+.wallet-card-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 4px 14px -2px rgba(37, 99, 235, 0.4);
+}
+
+.wallet-card-left {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 0 auto;
+}
+
+.wallet-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+.wallet-card-btn:hover .wallet-icon-wrap {
+  transform: scale(1.2);
+}
+
+.wallet-card-btn:active .wallet-icon-wrap {
+  transform: scale(1.42);
+}
+
+.wallet-icon-wrap img,
+.wallet-icon-wrap svg {
+  width: 56px;
+  height: 56px;
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.32));
+  transition: filter 0.24s ease;
+}
+
+.wallet-card-btn:hover .wallet-icon-wrap img,
+.wallet-card-btn:hover .wallet-icon-wrap svg {
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.45));
+}
+
+.wallet-card-btn:active .wallet-icon-wrap img,
+.wallet-card-btn:active .wallet-icon-wrap svg {
+  filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.55));
+}
+
+.wallet-card-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+
+.wallet-card-text strong {
+  display: block;
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.wallet-card-text span {
+  display: block;
+  margin-top: 4px;
+  color: #dbeafe;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* State 2: Connecting View */
+.connecting-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 8px;
+}
+
+.connecting-fox-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  margin-bottom: 18px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.connecting-fox-wrap img,
+.connecting-fox-wrap svg {
+  width: 54px;
+  height: 54px;
+  animation: fox-breathe 2s ease-in-out infinite;
+}
+
+@keyframes fox-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+.connecting-box h3 {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+}
+
+.connecting-box p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  max-width: 320px;
+}
+
+.connecting-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.connecting-dots span {
+  width: 7px;
+  height: 7px;
+  background: var(--blue);
+  border-radius: 50%;
+  animation: dot-bounce 1.4s infinite ease-in-out both;
+}
+
+.connecting-dots span:nth-child(1) { animation-delay: -0.32s; }
+.connecting-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes dot-bounce {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* State 3: Connected & Signing (Mẫu 2 - Đồng bộ màu nền thẻ tổng #F8FAFC) */
+.connected-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 18px;
+  background: #F8FAFC;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 #ffffff;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.connected-pill:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow:
+    0 6px 18px -2px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 #ffffff;
+}
+
+.connected-pill-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Radar Pulse Beacon */
+.radar-beacon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.radar-ripple {
+  position: absolute;
+  inset: -4px;
+  border: 1.5px solid rgba(16, 185, 129, 0.55);
+  border-radius: 50%;
+  animation: radar-beacon-wave 2s infinite cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: none;
+}
+
+@keyframes radar-beacon-wave {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.connected-dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25), 0 0 8px #10b981;
+}
+
+/* Circular Wallet Icon Disk (MetaMask Fox) */
+.wallet-disk-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  box-shadow: 0 1px 4px rgba(246, 133, 27, 0.15);
+  transition: all 0.22s ease;
+}
+
+.connected-pill:hover .wallet-disk-icon {
+  transform: scale(1.08);
+  border-color: #fdba74;
+  box-shadow: 0 3px 10px rgba(246, 133, 27, 0.25);
+}
+
+.wallet-disk-icon img,
+.wallet-disk-icon svg {
+  display: block;
+}
+
+.wallet-disk-icon img {
+  width: 22px;
+  height: 22px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
+  transition: transform 0.22s ease;
+}
+
+.connected-pill:hover .wallet-disk-icon img {
+  transform: scale(1.06);
+}
+
+/* Center 2-Tiered Typography */
+.connected-pill-center {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 2px;
+}
+
+.connected-label {
+  font: 700 0.64rem 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.connected-pill-center strong {
+  font: 700 0.96rem 'Roboto Mono', monospace;
+  color: #0f172a;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+}
+
+/* Right Circular Copy Button */
+.wallet-copy-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.wallet-copy-btn:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #2563eb;
+  transform: scale(1.08);
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.18);
+}
+
+.wallet-copy-btn:active {
+  transform: scale(0.92);
+}
+
+.wallet-copy-btn svg {
+  display: block;
+}
+
+/* Holographic Sign Card Button */
+.wallet-card-sign {
+  position: relative;
+  width: 100%;
+  padding: 16px 18px;
+  min-height: auto;
+  background: linear-gradient(135deg, rgba(10, 25, 41, 0.96) 0%, rgba(14, 35, 56, 0.94) 50%, rgba(6, 22, 38, 0.98) 100%);
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  border-radius: 22px;
+  box-shadow:
+    0 12px 32px -4px rgba(6, 78, 59, 0.45),
+    0 0 24px rgba(16, 185, 129, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  text-align: left;
+}
+
+.wallet-card-sign::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(110, 231, 183, 0.8), transparent);
+}
+
+.sign-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  width: 100%;
+}
+
+/* 3D Key Seal Badge */
+.sign-key-seal {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
+}
+
+.seal-orbit {
+  position: absolute;
+  inset: -3px;
+  border: 1.5px dashed rgba(52, 211, 153, 0.45);
+  border-radius: 50%;
+  animation: seal-orbit-spin 16s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes seal-orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.seal-disk {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #047857 0%, #064e3b 70%, #022c22 100%);
+  border: 1.5px solid rgba(110, 231, 183, 0.85);
+  box-shadow:
+    0 0 16px rgba(52, 211, 153, 0.45),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease;
+}
+
+.seal-disk svg {
+  display: block;
+  filter: drop-shadow(0 0 6px rgba(110, 231, 183, 0.6));
+}
+
+/* Typography & Subtitle */
+.wallet-card-sign .wallet-card-text {
+  flex: 0 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.wallet-card-sign .sign-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.wallet-card-sign .sign-title-group strong {
+  color: #ffffff !important;
+  font: 800 1.15rem 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  text-shadow: 0 0 14px rgba(52, 211, 153, 0.35);
+  margin: 0;
+}
+
+.wallet-card-sign .sign-desc {
+  margin: 2px 0 6px;
+  font-size: 0.73rem;
+  color: #94a3b8;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+/* Zero Gas Pill Badge */
+.sign-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px 3px 8px;
+  background: rgba(6, 78, 59, 0.65);
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  border-radius: 999px;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+  transition: all 0.2s ease;
+}
+
+.sign-badge-fire {
+  display: flex;
+  align-items: center;
+  color: #34d399;
+}
+
+.sign-pill-badge span {
+  color: #6ee7b7 !important;
+  font: 700 0.64rem 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Hover States: Glowing Emerald Blast */
+.wallet-card-sign:hover {
+  background: linear-gradient(135deg, rgba(13, 33, 54, 0.98) 0%, rgba(18, 44, 70, 0.95) 50%, rgba(9, 28, 48, 0.99) 100%);
+  border-color: #34d399;
+  box-shadow:
+    0 18px 42px -4px rgba(6, 78, 59, 0.6),
+    0 0 32px rgba(52, 211, 153, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.wallet-card-sign:hover .seal-disk {
+  transform: scale(1.08);
+  box-shadow:
+    0 0 24px rgba(52, 211, 153, 0.75),
+    inset 0 1px 3px #ffffff;
+}
+
+.wallet-card-sign:hover .sign-pill-badge {
+  background: rgba(6, 95, 70, 0.85);
+  border-color: #6ee7b7;
+  box-shadow: 0 0 14px rgba(52, 211, 153, 0.4);
+}
+
+/* Active / Press State */
+.wallet-card-sign:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow:
+    0 6px 20px -2px rgba(6, 78, 59, 0.5),
+    0 0 16px rgba(52, 211, 153, 0.25);
+}
+
+.wallet-card-sign:disabled {
+  opacity: 0.85;
+  cursor: wait;
+  transform: none;
+}
+
+.switch-wallet-btn {
+  margin: 14px auto 0;
+  font-size: 0.76rem;
+  color: var(--muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  display: block;
+  transition: color 0.15s ease;
+}
+
+.switch-wallet-btn:hover {
+  color: var(--ink);
+}
+
+/* State 4: Error */
+.error-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 12px 8px;
+}
+
+.error-badge-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 50%;
+  color: #b91c1c;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.error-box h3 {
+  margin: 0 0 6px;
+  color: #991b1b;
+  font-size: 1.1rem;
+}
+
+.error-box p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  max-width: 320px;
+}
+
+.error-actions {
+  width: 100%;
+}
+
+.error-actions a.button {
+  display: block;
+  text-decoration: none;
+  text-align: center;
+}
+
+/* Status Indicator */
+.auth-status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.74rem;
+  color: var(--muted);
+  font-family: 'Roboto Mono', monospace;
+}
+
+.status-indicator-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.status-indicator-dot.connecting {
+  background: var(--blue);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+  animation: pulse 1.5s infinite;
+}
+
+.status-indicator-dot.connected {
+  background: #10b981;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+}
+
+.status-indicator-dot.error {
+  background: #ef4444;
+}
+
+/* Security Reassurance Microcopy */
+.auth-security-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+  color: #94a3b8;
+  font-size: 0.72rem;
+  text-align: center;
+}
+
+.auth-security-notice .lock-icon {
+  font-size: 0.8rem;
+}
+
+@media (max-width: 560px) {
+  .auth-card {
+    padding: 32px 22px;
+    border-radius: 20px;
+  }
+  .auth-header h1 {
+    font-size: 1.5rem;
+  }
+}

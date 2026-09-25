@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: ''
+    },
+    studentId: {
+      type: String,
+      trim: true,
+      default: ''
     }
   },
   { timestamps: true }

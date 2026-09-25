@@ -33,11 +33,11 @@ Server mặc định chạy tại `http://localhost:5000`.
 
 User mới được tạo với role mặc định là `student`. User đã tồn tại sẽ nhận lại thông tin hiện có.
 
-- `POST /api/scholarships`: admin tạo học bổng mới.
+- `POST /api/scholarships`: admin tạo học bổng mới. Body gồm `scholarshipId`, `title`, `totalBudget`, `remainingBudget`, `rewardAmount` (giá trị mỗi suất, default: 1 ETH), `deadline`.
 - `GET /api/scholarships`: mọi người xem học bổng đang hoạt động.
-- `POST /api/applications`: sinh viên nộp hồ sơ. Body gồm `scholarshipId`, `studentAddress`, `studentName`.
+- `POST /api/applications`: sinh viên nộp hồ sơ. Body gồm `scholarshipId`, `studentAddress`, `studentName`. Tự động chặn hồ sơ trùng (mỗi sinh viên chỉ được nộp 1 lần cho 1 học bổng) và chặn nộp khi học bổng đã hết ngân sách.
 - `GET /api/applications/my-applications`: sinh viên xem hồ sơ của mình.
-- `PATCH /api/admin/applications/:id/status`: admin duyệt hoặc từ chối hồ sơ. Body: `{ "status": "approved" }` hoặc `{ "status": "rejected" }`.
+- `PATCH /api/admin/applications/:id/status`: admin duyệt hoặc từ chối hồ sơ. Body: `{ "status": "approved" }` hoặc `{ "status": "rejected" }`. Khi `approved`, hệ thống tự động trừ `remainingBudget` của học bổng theo giá trị suất học bổng một cách nguyên tử (atomic); nếu chuyển sang `rejected`, hệ thống tự động hoàn lại ngân sách đã duyệt.
 - `GET /api/health`: kiểm tra trạng thái server.
 
 Các route quản trị đặt dưới `/api/admin` được bảo vệ bởi middleware admin. Gửi địa chỉ ví của user trong header:
