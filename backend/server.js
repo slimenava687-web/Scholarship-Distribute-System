@@ -22,8 +22,20 @@ app.use(cors({
     const isLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
     const allowedOrigins = [frontendOrigin, 'http://localhost:5500', 'http://127.0.0.1:5500'];
 
-    if (isLocalhost || allowedOrigins.includes(origin)) {
-      return callback(null, true);
+    try {
+      const hostname = new URL(origin).hostname;
+      if (
+        isLocalhost ||
+        frontendOrigin === '*' ||
+        allowedOrigins.includes(origin) ||
+        /\.(github\.io|vercel\.app|onrender\.com)$/.test(hostname)
+      ) {
+        return callback(null, true);
+      }
+    } catch {
+      if (isLocalhost || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
     }
 
     return callback(null, false);

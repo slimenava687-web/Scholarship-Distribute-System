@@ -11,7 +11,7 @@ npm start
 2. Mở thư mục project bằng VS Code và chạy `frontend/index.html` bằng Live Server tại `http://localhost:5500`. Vì frontend dùng ES modules, không nên mở trực tiếp bằng `file://`.
 3. Kết nối MetaMask, sau đó bấm **Đăng nhập hệ thống**.
 
-Frontend gọi backend tại `http://localhost:5000/api`. Có thể đổi địa chỉ trong `js/api.js` bằng `API_BASE_URL`.
+Frontend gọi backend tại `https://scholarship-distribute-system.onrender.com/api` (hoặc `http://localhost:5000/api` khi phát triển local). Có thể đổi địa chỉ trong `js/api.js` bằng `API_BASE_URL`.
 
 Session đăng nhập được lưu trong `localStorage` với key `scholarship_session`; nút **Đăng xuất** sẽ xóa session và quay lại màn hình chào mừng.
 

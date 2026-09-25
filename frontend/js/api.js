@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://scholarship-distribute-system.onrender.com/api';
 const RATE_CACHE_KEY = 'eth_exchange_rate';
 const RATE_CACHE_TTL = 10 * 60 * 1000;
 const FALLBACK_ETH_RATE = { usd: 3000, vnd: 75000000, fetchedAt: 0, isFallback: true };
