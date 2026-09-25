@@ -3,6 +3,7 @@ import { api } from './api.js';
 const SESSION_KEY = 'scholarship_session';
 export const authState = { provider: null, signer: null, walletAddress: null, user: null };
 const $ = (id) => document.getElementById(id);
+let pendingLoginSignature = null;
 
 export function shortenAddress(address) {
   if (!address) return '';
@@ -291,6 +292,9 @@ async function connectWallet() {
     setAuthState('signing', { address: authState.walletAddress });
     notify('Đã kết nối ví. Vui lòng ký xác thực.');
   } catch (error) {
+    authState.provider = null;
+    authState.signer = null;
+    authState.walletAddress = null;
     const userRejected = error.code === 4001 || error.code === 'ACTION_REJECTED' || error.message?.toLowerCase().includes('user rejected');
     setAuthState('error', {
       title: userRejected ? 'Yêu cầu bị từ chối' : 'Không thể kết nối',
@@ -308,48 +312,66 @@ async function login() {
 
   const signButton = $('loginBtn');
   const originalHtml = signButton.innerHTML;
+  const walletAddress = authState.walletAddress;
+  let loginResponse;
 
   try {
     signButton.disabled = true;
     const textSpan = signButton.querySelector('.wallet-card-text span');
-    if (textSpan) textSpan.textContent = 'Chờ ký trong MetaMask...';
+    const hasReusableSignature = pendingLoginSignature
+      && pendingLoginSignature.walletAddress.toLowerCase() === walletAddress.toLowerCase()
+      && Date.now() - pendingLoginSignature.signedAt < 5 * 60 * 1000;
 
-    const message = [
-      'Scholarship Ledger login',
-      `Wallet: ${authState.walletAddress}`,
-      `Issued At: ${new Date().toISOString()}`
-    ].join('\n');
+    if (!hasReusableSignature) {
+      pendingLoginSignature = null;
+      if (textSpan) textSpan.textContent = 'Chờ ký trong MetaMask...';
 
-    const signature = await authState.signer.signMessage(message);
+      const signedAt = Date.now();
+      const message = [
+        'Scholarship Ledger login',
+        `Wallet: ${walletAddress}`,
+        `Issued At: ${new Date().toISOString()}`
+      ].join('\n');
+      const signature = await authState.signer.signMessage(message);
+      pendingLoginSignature = { walletAddress, message, signature, signedAt };
+    }
 
     if (textSpan) textSpan.textContent = 'Đang xác thực...';
-    const response = await api.login({
-      walletAddress: authState.walletAddress,
-      message,
-      signature
+    loginResponse = await api.login({
+      walletAddress,
+      message: pendingLoginSignature.message,
+      signature: pendingLoginSignature.signature
     });
-
-    authState.user = response.user;
-    localStorage.setItem(SESSION_KEY, JSON.stringify({
-      walletAddress: authState.walletAddress,
-      user: authState.user
-    }));
-
-    showDashboard();
-    if (authState.user?.role === 'student' && (!authState.user.name || !authState.user.name.trim())) {
-      showOnboardingModal(false);
-    }
   } catch (error) {
     const userRejected = error.code === 4001 || error.code === 'ACTION_REJECTED' || error.message?.toLowerCase().includes('user rejected');
     notify(userRejected ? 'Bạn đã từ chối ký thông điệp xác thực.' : (error.message || 'Đăng nhập thất bại.'), 'danger');
     setAuthState('signing', { address: authState.walletAddress });
+    return;
   } finally {
     signButton.disabled = false;
     signButton.innerHTML = originalHtml;
   }
+
+  try {
+    authState.user = loginResponse.user;
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      walletAddress,
+      user: authState.user
+    }));
+
+    showDashboard();
+    pendingLoginSignature = null;
+    if (authState.user?.role === 'student' && (!authState.user.name || !authState.user.name.trim())) {
+      showOnboardingModal(false);
+    }
+  } catch (error) {
+    console.error('Error completing wallet login:', error.message);
+    notify('Ví đã xác thực nhưng không thể mở giao diện. Vui lòng thử lại.', 'danger');
+  }
 }
 
 export function logout() {
+  pendingLoginSignature = null;
   localStorage.removeItem(SESSION_KEY);
   authState.provider = null;
   authState.signer = null;
@@ -438,6 +460,7 @@ export function initAuth() {
   const switchBtn = $('switchWalletBtn');
   if (switchBtn) {
     switchBtn.addEventListener('click', () => {
+      pendingLoginSignature = null;
       authState.signer = null;
       authState.walletAddress = null;
       setAuthState('idle');
@@ -461,7 +484,13 @@ export function initAuth() {
   if (logoutBtn) logoutBtn.addEventListener('click', () => logout());
 
   if (window.ethereum) {
-    window.ethereum.on('accountsChanged', () => logout());
+    window.ethereum.on('accountsChanged', (accounts) => {
+      if (!authState.walletAddress) return;
+      const activeAccount = accounts[0];
+      if (!activeAccount || activeAccount.toLowerCase() !== authState.walletAddress.toLowerCase()) {
+        logout();
+      }
+    });
   }
 
   const onboardingForm = $('onboardingForm');
