@@ -1,17 +1,35 @@
 const API_BASE_URL = 'https://scholarship-distribute-system.onrender.com/api';
+const API_REQUEST_TIMEOUT = 90_000;
 const RATE_CACHE_KEY = 'eth_exchange_rate';
 const RATE_CACHE_TTL = 10 * 60 * 1000;
 const FALLBACK_ETH_RATE = { usd: 3000, vnd: 75000000, fetchedAt: 0, isFallback: true };
 const CURRENCY_KEY = 'scholarship_display_currency';
 
 async function apiRequest(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.message || 'API request failed.');
-  return data;
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), API_REQUEST_TIMEOUT);
+
+  try {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      signal: controller.signal
+    });
+    const data = await response.json().catch((error) => {
+      if (controller.signal.aborted) throw error;
+      return {};
+    });
+
+    if (!response.ok) throw new Error(data.message || 'API request failed.');
+    return data;
+  } catch (error) {
+    if (controller.signal.aborted || error.name === 'AbortError') {
+      throw new Error('Máy chủ phản hồi quá lâu (quá 90 giây). Vui lòng kiểm tra backend/MongoDB rồi thử lại.');
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
 }
 
 export async function getEthExchangeRate() {
