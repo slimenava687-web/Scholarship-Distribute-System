@@ -400,7 +400,21 @@ export async function restoreSession() {
     }
     authState.signer = await authState.provider.getSigner();
     authState.walletAddress = await authState.signer.getAddress();
-    authState.user = session.user;
+
+    // Luôn lấy user mới nhất từ DB để đảm bảo role được đồng bộ
+    try {
+      const { user: freshUser } = await api.getMe(authState.walletAddress);
+      authState.user = freshUser;
+      // Cập nhật localStorage với role mới nhất
+      localStorage.setItem(SESSION_KEY, JSON.stringify({
+        walletAddress: authState.walletAddress,
+        user: freshUser
+      }));
+    } catch {
+      // Nếu không gọi được API (offline / server lỗi) thì fallback về session cũ
+      authState.user = session.user;
+    }
+
     showDashboard();
     if (authState.user?.role === 'student' && (!authState.user.name || !authState.user.name.trim())) {
       showOnboardingModal(false);

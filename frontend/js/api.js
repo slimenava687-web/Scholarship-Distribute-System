@@ -76,6 +76,7 @@ export function setSelectedCurrency(currency) {
 
 export const api = {
   login: (payload) => apiRequest('/auth/login', { method: 'POST', body: JSON.stringify(payload) }),
+  getMe: (walletAddress) => apiRequest('/auth/me', { headers: { 'x-wallet-address': walletAddress } }),
   updateProfile: (payload, walletAddress) => apiRequest('/auth/profile', { method: 'PUT', headers: { 'x-wallet-address': walletAddress }, body: JSON.stringify(payload) }),
   scholarships: () => apiRequest('/scholarships'),
   myApplications: (walletAddress) => apiRequest('/applications/my-applications', { headers: { 'x-wallet-address': walletAddress } }),

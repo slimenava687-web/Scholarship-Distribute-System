@@ -85,4 +85,8 @@ async function updateProfile(req, res) {
   }
 }
 
-module.exports = { login, updateProfile };
+async function getMe(req, res) {
+  return res.json({ user: req.user });
+}
+
+module.exports = { login, updateProfile, getMe };
