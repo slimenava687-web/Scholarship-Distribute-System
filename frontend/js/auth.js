@@ -160,54 +160,6 @@ export function setAuthState(state, options = {}) {
   }
 }
 
-export function showOnboardingModal(isEditMode = false) {
-  const backdrop = $('onboardingBackdrop');
-  if (!backdrop) return;
-
-  const walletAddr = $('onboardingWalletAddress');
-  if (walletAddr) walletAddr.textContent = shortenAddress(authState.walletAddress);
-
-  const title = $('onboardingTitle');
-  const subtitle = $('onboardingSubtitle');
-  const cancelBtn = $('onboardingCancelBtn');
-  const closeBtn = $('onboardingCloseBtn');
-  const submitBtn = $('onboardingSubmitBtn');
-  const nameInput = $('onboardingFullName');
-  const studentIdInput = $('onboardingStudentId');
-
-  if (isEditMode) {
-    if (title) title.textContent = 'Cập nhật hồ sơ sinh viên';
-    if (subtitle) subtitle.textContent = 'Thay đổi họ tên hoặc mã số sinh viên gắn với ví.';
-    if (submitBtn) submitBtn.textContent = 'Lưu thay đổi ✓';
-    if (cancelBtn) cancelBtn.classList.remove('is-hidden');
-    if (closeBtn) closeBtn.classList.remove('is-hidden');
-    if (nameInput) nameInput.value = authState.user?.name || '';
-    if (studentIdInput) studentIdInput.value = authState.user?.studentId || '';
-  } else {
-    if (title) title.textContent = 'Hoàn tất hồ sơ sinh viên 🎓';
-    if (subtitle) subtitle.textContent = 'Xác nhận danh tính liên kết với địa chỉ ví của bạn một lần duy nhất.';
-    if (submitBtn) submitBtn.textContent = 'Lưu hồ sơ & Bắt đầu 🚀';
-    if (cancelBtn) cancelBtn.classList.add('is-hidden');
-    if (closeBtn) closeBtn.classList.add('is-hidden');
-    if (nameInput) nameInput.value = authState.user?.name || '';
-    if (studentIdInput) studentIdInput.value = authState.user?.studentId || '';
-  }
-
-  backdrop.classList.remove('is-hidden');
-  requestAnimationFrame(() => {
-    backdrop.classList.add('is-active');
-    nameInput?.focus();
-  });
-}
-
-export function hideOnboardingModal() {
-  const backdrop = $('onboardingBackdrop');
-  if (!backdrop) return;
-  backdrop.classList.remove('is-active');
-  window.setTimeout(() => {
-    backdrop.classList.add('is-hidden');
-  }, 220);
-}
 
 export function showDashboard() {
   $('loginView').classList.add('is-hidden');
@@ -361,9 +313,6 @@ async function login() {
 
     showDashboard();
     pendingLoginSignature = null;
-    if (authState.user?.role === 'student' && (!authState.user.name || !authState.user.name.trim())) {
-      showOnboardingModal(false);
-    }
   } catch (error) {
     console.error('Error completing wallet login:', error.message);
     notify('Ví đã xác thực nhưng không thể mở giao diện. Vui lòng thử lại.', 'danger');
@@ -416,9 +365,6 @@ export async function restoreSession() {
     }
 
     showDashboard();
-    if (authState.user?.role === 'student' && (!authState.user.name || !authState.user.name.trim())) {
-      showOnboardingModal(false);
-    }
   } catch {
     localStorage.removeItem(SESSION_KEY);
   }
@@ -505,64 +451,6 @@ export function initAuth() {
         logout();
       }
     });
-  }
-
-  const onboardingForm = $('onboardingForm');
-  if (onboardingForm) {
-    onboardingForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = $('onboardingFullName').value.trim();
-      const studentId = $('onboardingStudentId').value.trim();
-      if (!name) {
-        notify('Vui lòng nhập họ và tên sinh viên.', 'warning');
-        return;
-      }
-      if (!studentId) {
-        notify('Vui lòng nhập mã số sinh viên (MSSV).', 'warning');
-        return;
-      }
-
-      const submitBtn = $('onboardingSubmitBtn');
-      const prevText = submitBtn.textContent;
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Đang lưu...';
-
-      try {
-        const res = await api.updateProfile({ name, studentId }, authState.walletAddress);
-        authState.user = res.user;
-        localStorage.setItem(SESSION_KEY, JSON.stringify({
-          walletAddress: authState.walletAddress,
-          user: authState.user
-        }));
-        hideOnboardingModal();
-        notify('Hồ sơ sinh viên đã được lưu thành công!', 'success');
-
-        // Immediately update verified card elements in DOM
-        const studentNameInput = $('studentName');
-        if (studentNameInput) studentNameInput.value = authState.user.name || '';
-        const displayStudentName = $('displayStudentName');
-        if (displayStudentName) displayStudentName.textContent = authState.user.name || 'Chưa thiết lập tên';
-        const displayStudentId = $('displayStudentId');
-        if (displayStudentId) displayStudentId.textContent = authState.user.studentId ? `MSSV: ${authState.user.studentId}` : 'Chưa có MSSV';
-
-        showDashboard();
-      } catch (err) {
-        notify(err.message || 'Không thể lưu hồ sơ sinh viên.', 'danger');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = prevText;
-      }
-    });
-  }
-
-  const cancelBtn = $('onboardingCancelBtn');
-  if (cancelBtn) {
-    cancelBtn.addEventListener('click', () => hideOnboardingModal());
-  }
-
-  const closeBtn = $('onboardingCloseBtn');
-  if (closeBtn) {
-    closeBtn.addEventListener('click', () => hideOnboardingModal());
   }
 
   setAuthState('idle');

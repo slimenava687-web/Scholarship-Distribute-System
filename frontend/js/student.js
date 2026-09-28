@@ -1,5 +1,5 @@
 import { api, getEthExchangeRate, getSelectedCurrency } from './api.js';
-import { authState, escapeHtml, notify, showOnboardingModal } from './auth.js';
+import { authState, escapeHtml, notify } from './auth.js';
 import { setButtonLoading, showEmpty, showLoading, showSkeletonCards } from './ui.js';
 import {
   applyForScholarshipOnChain,
@@ -113,14 +113,8 @@ export async function loadMyApplications() {
   }).join('');
 }
 
-export function initStudent() {
-  const editProfileBtn = $('editProfileBtn');
-  if (editProfileBtn) {
-    editProfileBtn.addEventListener('click', () => {
-      showOnboardingModal(true);
-    });
-  }
 
+export function initStudent() {
   $('applicationForm').addEventListener('submit', async (event) => {
     event.preventDefault();
     const button = event.target.querySelector('button[type="submit"]');
